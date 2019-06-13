@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" name="username" class="form-control username" id="inputEmail3" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" name="nickname" class="form-control nickname" id="inputEmail3" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" name="email" class="form-control email" id="inputEmail3" value="lisisi@126.com">
                     </div>
                 </div>
                 
@@ -44,14 +44,14 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="user_pic"  id="exampleInputFile">
                     </div>
                 </div>
 
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
+                            <input type="password" name="password" class="form-control password" id="inputEmail3" value="12345678">
                         </div>
                     </div>
                
@@ -65,6 +65,62 @@
         </div>
     </div>
 
+    <script>
+        $(function(){
+
+            // 页面一加载 把数据添加到对应地方
+            $.ajax({
+                type:'get',
+                url:'http://localhost:8000/admin/userinfo_get',
+                success:function(xhrData){
+                    // console.log(xhrData);
+                    for(var key in xhrData.data){
+                        $('input.'+key).val(xhrData.data[key]);
+                    }
+                    $('.user_pic').attr('src',xhrData.data.user_pic);
+                    
+                },
+            });
+
+
+            // 点击上传图片
+            $('#exampleInputFile').on('change',function(){
+                // 获取到表示图片的js对象,无法设置为img
+                var icon = this.files[0];
+                // 需要把文件边为url;
+                var url = URL.createObjectURL(icon);
+                $('.user_pic').attr('src',url);
+            });
+
+            // 点击修改按钮提交数据
+            $('.btn-success').on('click',function(e){
+                // 阻止默认跳转
+                e.preventDefault();
+                // 创建一个formData获取form表单里面的所有数据
+                var formData = new FormData($('form')[0])// 该方法为dom调用 所以要转换成dom
+                console.log(formData);
+                
+
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:8000/admin/userinfo_edit',
+                    // 参数要求 使用formdata 提交
+                    data:formData,
+                    contentType:false,// 不要设置请求头
+                    processData:false,// 不要把对象变成key=value这种格式的字符串
+                    success:function(xhrData){
+                        // console.log(xhrData);
+                        if(xhrData.code == 200){
+                            console.log('修改成功');   
+                            // window.location.href = './index.html';
+                        }
+                        
+                        
+                    },
+                })
+            });
+        })
+    </script>
 </body>
 
 </html>

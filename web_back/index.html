@@ -132,14 +132,28 @@
 
     <script>
         $(function () {
-            $('#tuichu').on('click', function () {
-                // alert(123)
+            // 页面一进来获取用户信息渲染页面
+            $.ajax({
+                type:'get',
+                url:'http://localhost:8000/admin/getuser',
+                success:function(xhrData){
+                    // console.log(xhrData);
+                    if(xhrData.code == 200){
+                        $('.user_info>img').attr('src',xhrData.data.user_pic);
+                        $('.user_info>span').html('欢迎&nbsp;&nbsp;'+xhrData.data.nickname);
+                        $('.user_center_link>img').attr('src',xhrData.data.user_pic);
+                    }
+                }
+            })
+
+
+
+            // 给退出按钮点击事件
+            $('#tuichu').on('click', function (e) {
+                e.preventDefault();
                 $.ajax({
                     type: 'post',
                     url: 'https://autumnfish.cn/big/admin/logout',
-                    // data:{
-
-                    // },
                     success: function (xhrData) {
                         console.log(xhrData);
                         if (xhrData.code == 200) {
