@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,8 +30,69 @@
             </form>
         </div>
 
-    </div> 
+    </div>
+    <!-- 引入bootstrap的模态框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示框</h4>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('.input_sub').on('click', function (e) {
+                // 阻止跳转
+                e.preventDefault();
+                var userName = $.trim($('.input_txt').val());// 去除前后空格写法一
+                var password = $('.input_pass').val().trim();// 去除前后空格写法二
+                // console.log(userName+':'+password);
+                if (userName == '' || password == '') {
+                    // alert('账号密码不能为空！请重新输入~');
+                    $('#myModal').modal({
+                        keyboard:true,
+                    })
+                    $('.modal-body').text('账号密码不能为空！请重新输入');
+                    return;
+                }
+                $.ajax({
+                    type: 'post',
+                    url: 'https://autumnfish.cn/big/admin/login',
+                    data: {
+                        user_name: userName,
+                        password: password,
+                    },
+                    success: function (xhrData) {
+                        // console.log(xhrData);
+                        if (xhrData.code == 200) {
+                            window.location.href = './index.html';
+                        } else {
+                            // alert('账号或密码输入错误！');
+                            $('#myModal').modal({
+                                keyboard:true,
+                            })
+                            $('.modal-body').text('账号或密码输入错误！');
+                        }
 
+                    }
+                })
+
+            })
+        })
+    </script>
 </body>
 
 </html>
